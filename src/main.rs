@@ -21,12 +21,12 @@ fn main() -> Result<()> {
         println!("{:?}", req);
 
         let mut res_header = HashMap::new();
-        res_header.insert("Content-Type", "text/plain");
+        res_header.insert("Content-Type", "text/html; charset=utf-8");
         let res = http_util::HttpResponse::new(
             req.version,
             (200, "Ok"),
             res_header,
-            String::from("hello world"),
+            String::from("<h1>hello world</h1>"),
         );
         stream.write_all(res.to_string().as_bytes())?;
 
