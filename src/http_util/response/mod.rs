@@ -77,6 +77,7 @@ impl<'a> fmt::Display for HttpResponse<'a> {
         for (k, v) in &self.header {
             write!(f, "{}: {}\r\n", k, v)?;
         }
-        write!(f, "\r\n{}", self.body)
+
+        write!(f, "\r\n{}\r\n", self.body)
     }
 }
