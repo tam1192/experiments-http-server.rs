@@ -1,4 +1,5 @@
 use super::{utils::*, *};
+use std::str::FromStr;
 use std::{collections::HashMap, fmt};
 
 #[cfg(test)]
@@ -6,17 +7,17 @@ mod tests;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpRequest<'a> {
-    pub method: HttpMethod,
+    pub method: enums::Method,
     pub path: HttpPath,
-    pub version: HttpVersion,
+    pub version: enums::Version,
     pub header: HashMap<&'a str, &'a str>,
     pub body: String,
 }
 impl<'a> HttpRequest<'a> {
     pub fn new(
-        method: HttpMethod,
+        method: enums::Method,
         path: HttpPath,
-        version: HttpVersion,
+        version: enums::Version,
         header: HashMap<&'a str, &'a str>,
         body: String,
     ) -> Self {
@@ -37,9 +38,9 @@ impl<'a> HttpRequest<'a> {
             let line = lines.next().unwrap_or("");
             line.split_whitespace() // スペース単位で分割させる
         };
-        let method = HttpMethod::from_str(parts.next().unwrap_or(""))?;
+        let method = enums::Method::from_str(parts.next().unwrap_or(""))?;
         let path = HttpPath::from_str(String::from(parts.next().unwrap_or("")))?;
-        let version = HttpVersion::from_str(parts.next().unwrap_or(""))?;
+        let version = enums::Version::from_str(parts.next().unwrap_or(""))?;
         // 余分にあったら無効とする
         if parts.next().is_some() {
             return None;
