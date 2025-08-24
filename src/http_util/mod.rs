@@ -1,3 +1,5 @@
+pub mod enums;
+
 mod path;
 pub use path::HttpPath;
 
