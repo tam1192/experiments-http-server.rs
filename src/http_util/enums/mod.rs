@@ -57,6 +57,7 @@ pub enum Status {
         serialize = "Method Not Allowed"
     )]
     MethodNotAllowed,
+    Other(u32, String),
 }
 
 impl fmt::Display for Status {
