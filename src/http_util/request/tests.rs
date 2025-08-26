@@ -7,7 +7,7 @@ fn success_curl_request() {
     )
     .unwrap();
     assert_eq!(request.method, enums::Method::GET);
-    assert_eq!(request.path, HttpPath::from("/index.html"));
+    assert_eq!(request.path, HttpPath::from_str("/index.html").unwrap());
     assert_eq!(request.version, enums::Version::Http11);
     assert_eq!(request.header.get("Host"), Some(&"example.com"));
     assert_eq!(request.header.get("User-Agent"), Some(&"curl/7.64.1"));
@@ -33,7 +33,7 @@ Connection: keep-alive
 "#;
     let request = HttpRequest::from_str(request_str).unwrap();
     assert_eq!(request.method, enums::Method::GET);
-    assert_eq!(request.path, HttpPath::from("/"));
+    assert_eq!(request.path, HttpPath::from_str("/").unwrap());
     assert_eq!(request.version, enums::Version::Http11);
     assert_eq!(request.header.get("Host"), Some(&"localhost"));
     assert_eq!(

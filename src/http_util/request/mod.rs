@@ -1,6 +1,7 @@
-use anyhow::anyhow;
+use anyhow::{Context, anyhow, bail, ensure};
 
 use super::{utils::*, *};
+use std::fmt::format;
 use std::str::FromStr;
 use std::{collections::HashMap, fmt};
 
@@ -40,14 +41,12 @@ impl<'a> HttpRequest<'a> {
             let line = lines.next().unwrap_or("");
             line.split_whitespace() // スペース単位で分割させる
         };
+
         let method = enums::Method::from_str(parts.next().unwrap_or(""))?;
-        let path =
-            HttpPath::from_str(String::from(parts.next().unwrap_or(""))).ok_or(anyhow!(""))?;
+        let path = HttpPath::from_str(parts.next().unwrap_or(""))?;
         let version = enums::Version::from_str(parts.next().unwrap_or(""))?;
         // 余分にあったら無効とする
-        if parts.next().is_some() {
-            return Err(anyhow!("aa"));
-        }
+        ensure!(parts.next().is_none(), "error");
 
         // 2行目(以降)を処理する
         let mut header: HashMap<&str, &str> = HashMap::new();
