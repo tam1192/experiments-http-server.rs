@@ -52,11 +52,11 @@ Connection: keep-alive
 #[test]
 fn failure_request() {
     let request = HttpRequest::from_str("");
-    assert!(request.is_none());
+    assert!(request.is_err());
     let request = HttpRequest::from_str("GET");
-    assert!(request.is_none());
+    assert!(request.is_err());
     let request = HttpRequest::from_str("GET /");
-    assert!(request.is_none());
+    assert!(request.is_err());
     let request = HttpRequest::from_str("GET / HTTP/1.1");
-    assert!(request.is_some());
+    assert!(request.is_ok());
 }

@@ -1,3 +1,5 @@
+use anyhow::anyhow;
+
 use super::{utils::*, *};
 use std::str::FromStr;
 use std::{collections::HashMap, fmt};
@@ -29,7 +31,7 @@ impl<'a> HttpRequest<'a> {
             body,
         }
     }
-    pub fn from_str(s: &'a str) -> Option<Self> {
+    pub fn from_str(s: &'a str) -> anyhow::Result<Self> {
         // 行取得で行う
         let mut lines = s.lines();
 
@@ -39,11 +41,12 @@ impl<'a> HttpRequest<'a> {
             line.split_whitespace() // スペース単位で分割させる
         };
         let method = enums::Method::from_str(parts.next().unwrap_or(""))?;
-        let path = HttpPath::from_str(String::from(parts.next().unwrap_or("")))?;
+        let path =
+            HttpPath::from_str(String::from(parts.next().unwrap_or(""))).ok_or(anyhow!(""))?;
         let version = enums::Version::from_str(parts.next().unwrap_or(""))?;
         // 余分にあったら無効とする
         if parts.next().is_some() {
-            return None;
+            return Err(anyhow!("aa"));
         }
 
         // 2行目(以降)を処理する
@@ -61,7 +64,7 @@ impl<'a> HttpRequest<'a> {
         // headerの処理をする
         let body = lines.collect::<String>();
 
-        Some(Self {
+        Ok(Self {
             method,
             path,
             version,

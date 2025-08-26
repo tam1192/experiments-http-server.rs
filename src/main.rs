@@ -19,7 +19,7 @@ fn main() -> Result<()> {
 
         let buf = String::from_utf8_lossy(&buf);
 
-        let req = http_util::HttpRequest::from_str(&buf).ok_or(anyhow!("parse error"))?;
+        let req = http_util::HttpRequest::from_str(&buf)?;
         println!("{:?}", req);
     }
 
