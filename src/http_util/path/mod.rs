@@ -1,4 +1,6 @@
-use std::fmt;
+use std::{fmt, str::FromStr};
+
+use anyhow::{bail, ensure};
 
 #[cfg(test)]
 mod tests;
@@ -6,20 +8,22 @@ mod tests;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpPath(String);
 
-impl HttpPath {
-    // 許可された文字列のみで作る
-    pub fn from_str(s: String) -> Option<Self> {
+impl FromStr for HttpPath {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        // 0文字を認めない
+        ensure!(s.len() == 0, "path parse error: input is 0 characters");
+
         // 文字単位に分解します
         let mut c = s.chars();
 
         // 先頭は/になると見込んで
-        if c.next() != Some('/') {
-            return None;
-        }
+        ensure!(c.next() == Some('/'), "path parse error: Must begin with /");
 
         // findメソッドで許可されていない文字があるか検索しましょう
         // なかったら成功です。
-        if c.find(|c| {
+        if let Some(c) = c.find(|c| {
             !(c.is_ascii_alphanumeric()
                 || *c == '/'
                 || *c == '-'
@@ -30,25 +34,12 @@ impl HttpPath {
                 || *c == '&'
                 || *c == '%'
                 || *c == '#')
-        }) == None
-        {
-            Some(HttpPath(s))
-        } else {
-            None
+        }) {
+            // 見つかったらエラーとする
+            bail!("path parse error: {} is not allowed", c)
         }
-    }
-}
 
-// Fromトレイトもつけて、文字列から簡単に変換できるようにしましょう
-impl From<&str> for HttpPath {
-    fn from(s: &str) -> Self {
-        let s = s.to_string();
-        HttpPath::from(s)
-    }
-}
-impl From<String> for HttpPath {
-    fn from(s: String) -> Self {
-        HttpPath::from_str(s).unwrap_or(HttpPath(String::from("/"))) // デフォルト値は /
+        Ok(HttpPath(s.to_string()))
     }
 }
 
