@@ -21,18 +21,6 @@ fn main() -> Result<()> {
 
         let req = http_util::HttpRequest::from_str(&buf).ok_or(anyhow!("parse error"))?;
         println!("{:?}", req);
-
-        let mut res_header = HashMap::new();
-        res_header.insert("Content-Type", "text/html; charset=utf-8");
-        let res = http_util::HttpResponse::new(
-            req.version,
-            (200, "Ok"),
-            res_header,
-            String::from("<h1>hello world</h1>"),
-        );
-        stream.write_all(res.to_string().as_bytes())?;
-
-        stream.flush()?;
     }
 
     Ok(())
