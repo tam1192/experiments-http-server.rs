@@ -13,7 +13,7 @@ impl FromStr for HttpPath {
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         // 0文字を認めない
-        ensure!(s.len() == 0, "path parse error: input is 0 characters");
+        ensure!(s.len() > 0, "path parse error: input is 0 characters");
 
         // 文字単位に分解します
         let mut c = s.chars();
