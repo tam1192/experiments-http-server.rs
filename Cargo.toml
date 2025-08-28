@@ -5,5 +5,6 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.99"
+nom = "8.0.0"
 strum = { version = "0.27.2", features = ["derive"] }
 strum_macros = "0.27.2"
